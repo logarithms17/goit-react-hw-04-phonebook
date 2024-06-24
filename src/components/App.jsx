@@ -1,83 +1,128 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import ContactForm from './ContactForm/ContactForm'
 import ContactList from './ContactList/ContactList'
 import Filter from './Filter/Filter'
 
-export class App extends Component {
-  state = {
-    contacts: [
+function App() {
+
+  const [contacts, setContacts] = useState([
       { id: "1", name: "Neil Bryan Apostol", number: "09218017781" },
       { id: "2", name: "Benjamina Apostol", number: "09218234241" },
       { id: "3", name: "Bryce Apostol", number: "0921822331"}
-    ],
-    filter: ""
-  }
-
-  componentDidMount() {
-    console.log("DidMount")
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    console.log(contacts)
-
-    if (contacts !== null) { // if contacts is not empty, change its state from the data from local storage
-      this.setState({ contacts: parsedContacts });
-    } else {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts)); // if contacts is empty, set it
-    }
-  }
-
-  componentDidUpdate(_prevProps, prevState) {
-    console.log("didUpdate")
-    const { contacts } = this.state;
-    if (contacts !== prevState.contacts) { //if contacts is not equal to the previous contacts info, then change its state to the new data 
-      console.log('data changed')
-      localStorage.setItem('contacts', JSON.stringify(contacts));
-    } else {
-      console.log("no changes")
-    }
-  }
+  ])
   
+  const [filter, setFilter] = useState("")
+  // state = {
+  //   contacts: [
+  //     { id: "1", name: "Neil Bryan Apostol", number: "09218017781" },
+  //     { id: "2", name: "Benjamina Apostol", number: "09218234241" },
+  //     { id: "3", name: "Bryce Apostol", number: "0921822331"}
+  //   ],
+  //   filter: ""
+  // }
+  console.log(contacts)
+  // componentDidMount() {
+  //   console.log("DidMount")
+  //   const contacts = localStorage.getItem('contacts');
+  //   const parsedContacts = JSON.parse(contacts);
+  //   if (contacts !== null) { // if contacts is not empty, change its state from the data from local storage
+  //     this.setState({ contacts: parsedContacts });
+  //   } else {
+  //     localStorage.setItem('contacts', JSON.stringify(this.state.contacts)); // if contacts is empty, set it
+  //   }
+  // }
+  
+    useEffect(() => {
+    const storageContacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(storageContacts);
+      
+    console.log(parsedContacts)
+      if (storageContacts !== null) { //if contacts is not empty, change its state from the data from local storage
+      setContacts(parsedContacts);
+      } else {
+        localStorage.setItem('contacts', JSON.stringify(contacts)) // if storage contacts is empty, set it
+    }
+  
+    return () => {
+    }
+  }, [])
 
-  render() {
-    console.log("render()")
-    const { contacts, filter } = this.state
+  // componentDidUpdate(_prevProps, prevState) {
+  //   console.log("didUpdate")
+  //   const { contacts } = this.state;
+  //   if (contacts !== prevState.contacts) { //if contacts is not equal to the previous contacts info, then change its state to the new data 
+  //     console.log('data changed')
+  //     localStorage.setItem('contacts', JSON.stringify(contacts));
+  //   } else {
+  //     console.log("no changes")
+  //   }
+  // }
+  
+  //UPDATE LOCAL STORAGE EVERYTIME THE CONTACTS STATE CHANGES
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts))
+  
+    return () => {
+      
+    }
+  }, [contacts]) 
+  
     
     const addInfo = (newInfo) => {
-      this.setState(prevValue => ({
-        contacts: [...prevValue.contacts, newInfo]
-      }))
-    }
+      setContacts(prevValue => {
+        return [...prevValue, newInfo]
+        // contacts: [...prevValue, newInfo]
+      })
+      
+  }
+  
+  
 
-    const deleteInfo = (id) => {
+  const deleteInfo = (id) => {
+      console.log("deleteInfo")
       // implement delete functionality
-      this.setState(prevValue => ({
-        contacts: prevValue.contacts.filter(contact => contact.id !== id)
-      }))
-    }
+      // setContacts(prevValue => ({
+      //   contacts: prevValue.filter(contact => contact.id !== id)
+      // }))
+    setContacts(prevValue => {
+      console.log(prevValue)
+        return  prevValue.filter(contact => contact.id !== id)
+      })
+  }
+  console.log(contacts)
 
-    const setFilter = (prevValue) => {
+  const updateFilter = (filterValue) => {
+      console.log("updateFilter")
       // implement filter functionality
       
-      this.setState({ filter: prevValue })
+    setFilter(() => {
+        return filterValue
+      })
+  }
 
-      
-    }
+  //       setFilter({ filter: filterValue })
+  // }
+  
+  
 
     //get the array of the filtered data from filter
     const filterContact = () => {
-      const { contacts, filter } = this.state
+      // const { contacts, filter } = this.state
       return contacts.filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase())) //using includes returns the data every changes
 
       // return contacts.filter(contact => contact.name.toLowerCase() === filter.toLowerCase()) {using this method only returns the data if the info is complete}
-    }
+  }
+  
 
     return ( 
       <div>
         <ContactForm addInfo={addInfo} contacts={contacts} />
-        <Filter filter={filter} setFilter={setFilter} />
+        <Filter filter={filter} updateFilter={updateFilter} />
         <ContactList deleteInfo={deleteInfo} filterContact={filterContact} />
       </div>
     )
   }
-}
+
+
+export default App;
 

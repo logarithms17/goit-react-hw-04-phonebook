@@ -1,17 +1,23 @@
 import { nanoid } from 'nanoid'
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import css from './ContactForm.module.css'
 
-export default class ContactForm extends Component {
-    state = {
+function ContactForm ({addInfo, contacts}) {
+    // state = {
+    //     name: '',
+    //     number: ''
+    // }
+
+    
+
+    const [state, setState] = useState({
         name: '',
         number: ''
-    }
+    })
     
-    render() {
-        const { name, number } = this.state
-        const { addInfo, contacts } = this.props
+        const { name, number } = state
+        // const { addInfo, contacts } = this.props
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -31,7 +37,7 @@ export default class ContactForm extends Component {
         if (existingContact) {
             alert(`${name} is already on the list.`)
 
-            this.setState(() => ({
+            setState(() => ({
             name:"",
             number: "",
         }))
@@ -44,7 +50,9 @@ export default class ContactForm extends Component {
             number: number.trim(),
         })
 
-        this.setState(() => ({
+        
+
+        setState(() => ({
             name:"",
             number: "",
         }))
@@ -53,17 +61,20 @@ export default class ContactForm extends Component {
     //Function that handles the change of the name state
     const handleNameChange = (e) => { 
         const { value } = e.target
-        this.setState(() => ({ //No need for prevValue for handleCange because we are only changing the value of the input
-        name: value
-        }))
+        setState((prevState) => {
+            return { ...prevState, name: value }
+        })
+        
     }
+
+    
     
     //Function that handles the change of the number state
     const handleNumberChange = (e) => { 
         const { value } = e.target
-        this.setState(() => ({ //No need for prevValue for handleCange because we are only changing the value of the input
-        number: value
-        }))
+        setState((prevState) => {
+            return { ...prevState, number: value }
+        })
     }
     return ( //use onSubmit when submitting a form
     <div className={css.contactFormContainer}>
@@ -100,8 +111,10 @@ export default class ContactForm extends Component {
         </form>
     </div>
         )
-    }
+    
 }
+
+export default ContactForm
 
 ContactForm.propTypes = {
     addInfo: PropTypes.func.isRequired,

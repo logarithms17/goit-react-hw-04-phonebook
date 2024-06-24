@@ -1,15 +1,13 @@
-import React, { Component } from 'react'
 import css from './Filter.module.css'
 import PropTypes from 'prop-types'
 
-export default class Filter extends Component {
+function Filter ({ filter, updateFilter }) {
     
-render() {
-    const { filter, setFilter } = this.props
+    // const { filter, updateFilter } = this.props
     
     const handleFilter = (e) => {
         
-        setFilter(e.target.value)
+        updateFilter(e.target.value)
     }
     return (
         <div>
@@ -19,10 +17,11 @@ render() {
     </div>
     )
 }
-}
+
+export default Filter
 
 Filter.propTypes = {
     filter: PropTypes.string.isRequired,
-    setFilter: PropTypes.func.isRequired
+    updateFilter: PropTypes.func.isRequired
 
 }
