@@ -5,11 +5,15 @@ import Filter from './Filter/Filter'
 
 function App() {
 
-  const [contacts, setContacts] = useState([
+  const initialContacts = [
       { id: "1", name: "Neil Bryan Apostol", number: "09218017781" },
       { id: "2", name: "Benjamina Apostol", number: "09218234241" },
       { id: "3", name: "Bryce Apostol", number: "0921822331"}
-  ])
+  ]
+
+  const localContacts = localStorage.getItem('contacts')
+
+  const [contacts, setContacts] = useState(localContacts !== null ? JSON.parse(localContacts) : initialContacts)
   
   const [filter, setFilter] = useState("")
   // state = {
@@ -32,20 +36,19 @@ function App() {
   //   }
   // }
   
-    useEffect(() => {
-    const storageContacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(storageContacts);
-      
-    console.log(parsedContacts)
-      if (storageContacts !== null) { //if contacts is not empty, change its state from the data from local storage
-      setContacts(parsedContacts);
-      } else {
-        localStorage.setItem('contacts', JSON.stringify(contacts)) // if storage contacts is empty, set it
-    }
+  //   useEffect(() => {
+  //   const storageContacts = localStorage.getItem('contacts');
+  //   const parsedContacts = JSON.parse(storageContacts);
+
+  //     if (storageContacts !== null) { //if contacts is not empty, change its state from the data from local storage
+  //     setContacts(parsedContacts);
+  //     } else {
+  //       localStorage.setItem('contacts', JSON.stringify(contacts)) // if storage contacts is empty, set it
+  //   }
   
-    return () => {
-    }
-  }, [])
+  //   return () => {
+  //   }
+  // }, [])
 
   // componentDidUpdate(_prevProps, prevState) {
   //   console.log("didUpdate")
