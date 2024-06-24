@@ -63,7 +63,6 @@ function App() {
     localStorage.setItem('contacts', JSON.stringify(contacts))
   
     return () => {
-      
     }
   }, [contacts]) 
   
